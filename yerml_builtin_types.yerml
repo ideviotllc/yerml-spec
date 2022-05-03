@@ -1,0 +1,58 @@
+%YERML 0.1.0
+---
+
+idlm: str := r"[ \t]+"                              // Inline Delimiter
+
+ndlm: str := r"[ \t]*[\r\n]+"                       // New Line Delimiter
+
+comment: := r"${idlm}//[.]*${ndlm}"                 // Single line comment
+
+ent_token: := r"[A-Za-z_]+[A-Za-z0-9_\-]+"          // Entity Token e.g. full_name, _priv, __hidden, CONST
+
+ent_ref: := r"${ent_token}(.${ent_token})*"         // Entity Reference e.g. person.name.first
+
+token: :=r"[\S]+"                                   // Token i.e. non white space characters
+
+str: := r"\".*\""                                   // String
+
+rstr: str                                           // Regex String
+  prefix: str #= "r"
+
+drive_spec: := r"([A-Za-z]:)?"                      // Hard drive specifier e.g. C:
+
+protocol_spec := r"http[s]?://"                     // Remote root file specifier e.g. https://
+
+root_spec: := r"[${drive_spec}${protocol_spec}]?"   // Root file specifier e.g. C: or https://
+
+file_spec: := r"[/\\\.][${token} \.]+"              // File location specifier e.g. folder names, domains
+
+file_url: := r"[${root_spec}${file_spec}*\.yerml"   // Total file URL
+
+import:
+  prefix: #= "import"
+    dlm: idlm
+  file_ref: :=r"\"${file_url}\""
+    dlm: ndlm
+
+set:
+  item: +
+    name: token
+    dlm: := r"[${ndlm},]"
+    comment: - comment
+
+enum:
+  item: + set.item
+    prefix:
+      value: uint
+      dlm: idlm
+
+bool: := r"(true|false)"
+
+uint: := r"[0-9]+"
+
+int: uint
+  prefix: := r"[\-]?"
+
+float: := r"${uint}+\.${uint}+"
+
+version: := r"${uint}(\.${uint})*"
