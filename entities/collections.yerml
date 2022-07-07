@@ -1,0 +1,16 @@
+%YERML 0.1.0
+---
+
+import "base.yerml"
+import "meta.yerml"
+
+# Collections
+
+Set: := r"(${SetItem}${Odlm},?${Odlm}${Ndlm}?)*${SetItem}${Odlm}${Ndlm}"
+  items: + SetItem := r"${name}"
+    name: := r".+"
+
+Enum: := r"(${EnumItem}${Odlm},?${Odlm}${Ndlm}?)*${EnumItem}${Odlm}${Ndlm}"
+  items: + EnumItem := r"${value}:${Odlm}${name}"
+      value: UInt
+      name: := r".+"

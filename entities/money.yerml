@@ -1,0 +1,8 @@
+%YERML 0.1.0
+---
+
+import "base.yerml"
+
+Currency:
+    symbol: String # e.g. "USD"
+    value: UFloat

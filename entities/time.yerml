@@ -1,0 +1,32 @@
+%YERML 0.1.0
+---
+
+import "base.yerml"
+
+# Time Entities
+
+Time:
+  second: UInt <= 60
+  minute: UInt <= 60
+  hour: UInt <= 24
+
+Date:
+  day: UInt <= 31
+  month: UInt <= 12
+  year: UInt
+
+DateTime:
+  second: UInt <= 60
+  minute: UInt <= 60
+  hour: UInt <= 24
+  day: UInt <= 31
+  month: UInt <= 12
+  year: UInt
+
+TimeSpan:
+  seconds: UInt <= 60
+  minutes: UInt <= 60
+  hours: UInt <= 24
+  days: UInt <= 31
+  months: UInt <= 12
+  years: UInt

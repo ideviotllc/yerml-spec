@@ -1,0 +1,14 @@
+%YERML 0.1.0
+---
+
+# Meta types
+
+Token: := r"\S+.\*"         # Token i.e. non white space characters not starting with a space
+
+Odlm: := r"[ \t]*"          # Optional Inline Delimeter
+
+Idlm: := r"[ \t]+"          # Inline Delimiter
+
+Ndlm: := r"[ \t]*[\r\n]+"   # New Line Delimiter
+
+Adlm: := r"  "              # Attribute Delimiter

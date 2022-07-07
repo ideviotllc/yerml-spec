@@ -1,0 +1,28 @@
+%YERML 0.1.0
+---
+
+# File Specifiers
+
+Drive: := r"[A-Za-z]{1}:"
+
+Protocol := r"[A-Za-z]+://"                         # Remote root specifier e.g. https://
+
+DomainName: := r"[A-Za-z\-]+"
+
+Domain: := r"${Protocol}?(${DomainName}\.)+${DomainName}"
+
+Root: := r"[${Drive}${Domain}][/\\]"
+
+DirName: := r".+"
+
+Directory: := r"${DirName}[/\\]"
+
+FileName: := r".+"
+
+FileExt := r".+"
+
+File: := r"${FileName}\.r{FileExt}"
+
+DirectoryLocator: := r"${Root}{Directory}*"
+
+FileLocator: := r"${DirectoryLocator}${File}"

@@ -1,0 +1,6 @@
+%YERML 0.1.0
+---
+
+import "base.yerml"
+
+Version: := r"[Vv]?${UInt}(\.${UInt})*"
