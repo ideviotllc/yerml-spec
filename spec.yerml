@@ -8,7 +8,7 @@ import "entities/files.yerml"
 
 Import: := r"import${Idlm}\"${FileLocator}\"${Ndlm}"  # Import other yerml files, relative to this file or absolute
 
-EntityName: := r"[A-Za-z_]+[A-Za-z0-9_\-]+"           # Entity Token e.g. full_name, _priv, __hidden, CONST
+EntityName: := r"[A-Za-z_]+[A-Za-z0-9_-]+"            # Entity Token e.g. full_name, _priv, __hidden, CONST
 
 Comment: := r"${Idlm}#[.]*${Ndlm}"                    # Single line comment
 
