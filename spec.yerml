@@ -1,49 +1,48 @@
 %YERML 0.1
 ---
 
-import "entites/meta.yerml"
+import "C:\entites\meta.yerml"
 import "entnties/base.yerml"
 import "entities/collections.yerml"
 import "entities/files.yerml"
 
-Import: := r"import${Idlm}\"${FileLocator}\"${Ndlm}"  # Import other yerml files, relative to this file or absolute
+Comment: := r"(?:(^[ \\t]*)|[ \\t]+)(?=#\\p{Print}*$)"    # Single line comment
 
-Comment: := r"${Idlm}#[.]*${Ndlm}"                    # Single line comment
+Import: := r"^import[ \t]+\"${FileLocator}\"${Comment}?$" # Import other yerml files, relative to this file or absolute
 
-EntityName: := r"[a-z_]+[A-Za-z0-9_-]+"               # Entity name e.g. first-name, lastName, full_name, _priv, __hidden
+EntityName: := r"[a-z_][\w-]+"                            # Entity name e.g. first-name, lastName, full_name, _priv, __hidden
 
-EntityTypeName: := r"[A-Z]+[A-Za-z0-9_-]+"            # Entity type name e.g. Name
+EntityTypeName: := r"[A-Z][\w-]+"                         # Entity type name e.g. Name
 
 YermlFile:
   yerml_head: YermlHead
-    head_directive:
-      prefix: := "%YERML${Idlm}"
-      version: Version = "0.1${Ndlm}"
-    separator: := r"${Ndlm}\-{3}${Ndlm}"
+    head_directive: := r"^%YERML[ \\t]+${version}$"
+      version: Version = "0.1"
+  document_begin: := r"^---"
   yermlverse:
     comments: * Comment
     imports: * Import
-    entities: * Entity := r"${definition}${Ndlm}${attributes}{Ndlm}"
-      definition: EntityDefinition := r"${name}${Odlm}:${Odlm}${descriptors}"
-        name: EntityName
-        descriptors: := r"${count}?${Idlm}${type}?{Idlm}${constraints}?"
-          count: - := r"${number}?${quantifier}?"
-            number: - UInt = 1
-            quantifier: - Set
-              +   # count.number or more (minimum)
-              -   # count.number or less (maximum)
-              *   # 0 or more (short hand)
-          type: - := r"${name}${Odlm}${dependencies}"  # "is a -or- extends (perhaps)"
-            name: EntityName
-            dependencies: - := r"\((${EntityName},)*${EntityName}?\)"
-          constraints: * := r"(${operator}${Odlm}.+${Idlm})*"
-            operator: - Set
-              <   # less than
-              >   # greater than
-              <=  # less than or equal
-              >=  # greater than or equal
-              !=  # not equal to
-              :=  # only equal to, constant, by definition
-              _=  # default value
-              =   # default value
-      attributes: * EntityDefinition := r"$({Ndlm}${Adlm}${EntityDefinition})*"
+    definition: * EntityDefinition := r"^[ \t]*(${ent_name}|${descriptors.type})[ \t]*:[ \t]*${descriptors}"
+      ent_name: EntityName
+      descriptors: := r"${count}?[ \t]*${type}?[ \t]*${constraints}?"
+        count: - := r"${number}?${quantifier}?"
+          number: - UInt = 1
+          quantifier: - Set
+            +   # count.number or more (minimum)
+            -   # count.number or less (maximum)
+            *   # 0 or more (short hand)
+        type: - := r"${name}${parents}?"  # "is a -or- extends (perhaps)"
+          name: EntityName
+          parents: - := r"[ ]?\((${EntityName}\)"         # No multiple inheritance for now
+        constraints: * := r"([ \t]*${operator}[ \t]*.+)*" # The grammar doesn't actually match any character (.) after the operator, use common sense
+          operator: - Set
+            <   # less than
+            >   # greater than
+            <=  # less than or equal
+            >=  # greater than or equal
+            !=  # not equal to
+            :=  # only equal to, constant, by definition
+            _=  # default value
+            =   # default value
+    attributes: * EntityDefinition  # Each attribute to be double spaced under owner like YAML
+  document_end: - := r"^\.{3}"      # This is technically in the grammar, but probably not useful

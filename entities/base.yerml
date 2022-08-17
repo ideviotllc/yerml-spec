@@ -1,11 +1,11 @@
-%YERML 0.1.0
+%YERML 0.1
 ---
 
 # Basic Entities
 
 Bool: := r"(true|false)"          # Boolean
 
-UInt: := r"[0-9]+"                # Unsigned integer
+UInt: := r"\d+"                   # Unsigned integer
 
 Int: := r"\-?${UInt}"             # Signed integer
 
@@ -13,6 +13,8 @@ UFloat: := r"${UInt}+\.${UInt}+"  # Unsigned floating point number
 
 Float: := r"\-?${UFloat}"         # Floating point number
 
-String: := r"\"\.*\""             # String
+String: := r"\"\(?:(?=(\\\\?))\\14.)*?\""   # String
 
-Percent: := r"${Float}%"
+RegexString: := r"r${String}"     # Regular expression String
+
+Percent: := r"${Float}%"          # Percent

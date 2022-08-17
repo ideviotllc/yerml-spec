@@ -1,8 +1,8 @@
-%YERML 0.1.0
+%YERML 0.1
 ---
 
 import "base.yerml"
 
-Currency:
+Currency: := r"\-?$?${value}[ ]?${symbol}"
     symbol: String # e.g. "USD"
     value: UFloat
