@@ -1,4 +1,4 @@
-%YERML 0.1.0
+%YERML 0.1
 ---
 
 import "entites/meta.yerml"
@@ -8,16 +8,18 @@ import "entities/files.yerml"
 
 Import: := r"import${Idlm}\"${FileLocator}\"${Ndlm}"  # Import other yerml files, relative to this file or absolute
 
-EntityName: := r"[A-Za-z_]+[A-Za-z0-9_-]+"            # Entity Token e.g. full_name, _priv, __hidden, CONST
-
 Comment: := r"${Idlm}#[.]*${Ndlm}"                    # Single line comment
+
+EntityName: := r"[a-z_]+[A-Za-z0-9_-]+"               # Entity name e.g. first-name, lastName, full_name, _priv, __hidden
+
+EntityTypeName: := r"[A-Z]+[A-Za-z0-9_-]+"            # Entity type name e.g. Name
 
 YermlFile:
   yerml_head: YermlHead
-    head_tag: 
-      prefix: C= "%YERML${Idlm}"
-      version: Version = "0.1.0${Ndlm}"
-    separator: C= r"${Ndlm}\-{3}${Ndlm}"
+    head_directive:
+      prefix: := "%YERML${Idlm}"
+      version: Version = "0.1${Ndlm}"
+    separator: := r"${Ndlm}\-{3}${Ndlm}"
   yermlverse:
     comments: * Comment
     imports: * Import
@@ -41,8 +43,7 @@ YermlFile:
               <=  # less than or equal
               >=  # greater than or equal
               !=  # not equal to
-              c=  # only equal to, constant
-              C=  # only equal to, constant
+              :=  # only equal to, constant, by definition
               _=  # default value
               =   # default value
       attributes: * EntityDefinition := r"$({Ndlm}${Adlm}${EntityDefinition})*"
