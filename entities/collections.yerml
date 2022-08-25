@@ -5,11 +5,11 @@ import "base.yerml"
 
 # Collections
 
-Set: := r"(${SetItem}[ \t]*,[ \t]*$?)*${SetItem}[ \t]*$"
+Set:
   items: + SetItem := r"${name}"
     name: := r".+"
 
-Enum: := r"(${EnumItem}[ \t]*,?[ \t]*$?)*${EnumItem}[ \t]*$"
+Enum:
   items: + EnumItem := r"${value}:[ \t]*${name}"
       value: UInt
       name: := r".+"

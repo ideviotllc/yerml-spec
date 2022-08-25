@@ -17,32 +17,32 @@ EntityTypeName: := r"[A-Z][\w-]+"                         # Entity type name e.g
 YermlFile:
   yerml_head: YermlHead
     head_directive: := r"^%YERML[ \\t]+${version}$"
-      version: Version = "0.1"
+      version: Version= "0.1"
   document_begin: := r"^---"
-  yermlverse:
+  yermlverse: *
     comments: * Comment
     imports: * Import
-    definition: * EntityDefinition := r"^[ \t]*(${ent_name}|${descriptors.type})[ \t]*:[ \t]*${descriptors}"
+    definition: * EntityDefinition := r"^[ \t]*(${EntityName}|${EntityTypeName})[ \t]*:[ \t]*${descriptors}"
       ent_name: EntityName
-      descriptors: := r"${count}?[ \t]*${type}?[ \t]*${constraints}?"
-        count: - := r"${number}?${quantifier}?"
-          number: - UInt = 1
-          quantifier: - Set
-            +   # count.number or more (minimum)
-            -   # count.number or less (maximum)
-            *   # 0 or more (short hand)
-        type: - := r"${name}${parents}?"  # "is a -or- extends (perhaps)"
+      descriptors: := r"([ \t]*(${count}|${type}|${constraints}))*"
+        count: - := r"${zero_or_more}|${quantifier}|${number}${quantifier}?" # Can only have up to one count 
+          number: UInt = 1
+          quantifier: Set
+            or_more: := "+"   # count.number or more (minimum)
+            or_less: := "-"   # count.number or less (maximum)
+          zero_or_more: := "*"  # Zero or more
+        type: - := r"${name}${parents}?"  # "is a -or- extends (perhaps)"; Can only have up to one type
           name: EntityName
           parents: - := r"[ ]?\((${EntityName}\)"         # No multiple inheritance for now
         constraints: * := r"([ \t]*${operator}[ \t]*.+)*" # The grammar doesn't actually match any character (.) after the operator, use common sense
           operator: - Set
-            <   # less than
-            >   # greater than
-            <=  # less than or equal
-            >=  # greater than or equal
-            !=  # not equal to
-            :=  # only equal to, constant, by definition
-            _=  # default value
-            =   # default value
-    attributes: * EntityDefinition  # Each attribute to be double spaced under owner like YAML
+            lt: := "<"    # less than
+            gt: := ">"    # greater than
+            le: := "<="   # less than or equal
+            ge: := ">="   # greater than or equal
+            ne: := "!="   # not equal to
+            ce: := ":="   # only/constant/by definition equal to
+            de: := "_="   # equal to by default
+            eq: := "="    # equal to (could be default too, depends on your context)
+    attributes: * EntityDefinition   # Each attribute to be double spaced under owner like YAML
   document_end: - := r"^\.{3}"      # This is technically in the grammar, but probably not useful
