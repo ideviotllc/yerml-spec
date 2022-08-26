@@ -44,5 +44,5 @@ YermlFile:
             ce: := ":="   # only/constant/by definition equal to
             de: := "_="   # equal to by default
             eq: := "="    # equal to (could be default too, depends on your context)
-    attributes: * EntityDefinition   # Each attribute to be double spaced under owner like YAML
+    attributes: * EntityDefinition  # Each attribute to be double spaced under owner like YAML
   document_end: - := r"^\.{3}"      # This is technically in the grammar, but probably not useful
