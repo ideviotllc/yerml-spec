@@ -155,21 +155,23 @@ By not naming this `Implicit` `Type` following the form below, it is impossible 
 
 ---
 
-`Explicit` `Types` have the format `Entity Type(Inherited Entity Type)`. 
+`Explicit` `Types` have the format `Child Type(Parent Type)`. Both `Child Type` and `Parent Type` are `Entity Types` and consequently have the same regex pattern as `Entity Type`.
+
+This `Type` is called `Explicit` because both the inherited type (`Parent Type`) and resulting extended type (`Child Type`) are both named.
+
+Unlike `Implicit` `Types`, beacuse `Explicit` `Types` are named, it is possible for other `Entity Types` to inherit from the resultant `Child Type`.
 
 ---
 
-`Anonymous` `Types` have no format because they are null.
+`Anonymous` `Types` have no format because this represents the case when there is no `Type` specified.
 
 ---
 
-Again, the regex pattern for `Entity Type` is `[A-Z]\\w*`.
-
-`ED`s that specify a `Type` implies that all 
-
-Akin to programming variable types and the ability for objects to inherit other objects. Only allows for single inheritance.
+Remember, regardless of `Type` form, all `Object` `ED`s (properly indented) will have `Relationships` with the `Type` `Entity Type` and **NOT** the `ED` `entity` **instance**.
 
 #### Constraints
+
+The `Constraints` descriptors specifies the `Object` `ED` entity's `Entity Type`.
 
 To Be Improved:
 
