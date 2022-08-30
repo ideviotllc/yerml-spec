@@ -10,9 +10,9 @@ This is a bit airy, so let's look at some use cases...
 
 # Use Cases
 
-1. A software architect may use this to document classes and interactions, similar to UML, and eventually use a future app to generate graphs.
-2. A firmware architect may use this to document a sensor's registers or parameters as a middle layer to auto generate firmware drivers.
-3. A data scientist may use this to document data relationships e.g. data lineage.
+- A software architect may use this to document classes and interactions, similar to UML, and eventually use a future app to generate graphs.
+- A firmware architect may use this to document a sensor's registers or parameters as a middle layer to auto generate firmware drivers.
+- A data scientist may use this to document data relationships e.g. data lineage.
 
 # Why?
 
@@ -24,126 +24,176 @@ The overall goal is to decouple architecture description from visualizations. Th
 2. Follow the grammar rules as described below, reference the basic example below, or reference spec.yerml in this repo.
 3. If you use VS Code, take advantage of the syntax highlighting extension.
 
-## Key Features
+# Key Features
 
-### Entity Definition (EntDef)
+## Entity Definition
 
 Just about every line in a YERML file is a variation of one pattern:
 
-`indentation``subject`:`descriptors`
+[`indentation`] `entity`: `descriptors`
 
-This pattern is called an `Entity Definition` (shorted to `EntDef` in this document) and its composition is described below.
+This pattern is called an `Entity Definition` ("`ED`") and its composition is described below.
 
-#### Indentation
+### Indentation
 
-`EntDef`s may have zero or more spaces preceding it. The relative spacing indicates the `role` an `EntDef` has w.r.t. the `EntDef`(s) preceding it.
+`ED`s may have zero or more spaces preceding it. The relative indention difference among `ED`s indicates the role an `ED` has w.r.t. the `ED`(s) preceding it.
 
-The two `role`s are `Subject` and `Object` (just like in basic English sentence structure). And naturally, `Subject`s have `relationship`s with `Object`s.
+The two roles are [`Subject`](https://en.wikipedia.org/wiki/Subject_(grammar)) and [`Object`](https://en.wikipedia.org/wiki/Object_(grammar)), just like English grammar. And naturally, `Subjects` have `Relationships` with `Objects`.
 
-`EntDef`s starting with 0 spaces are deemed `root` definitions. They are always in the `Subject` `role`. In practice, these will often be the core subjects of a YERML document (e.g. the main characters of a movie).
+`ED`s starting with 0 spaces are deemed `Root` definitions. They are always `Subjects`. In practice, these will often be the core subjects of a YERML document (e.g. like the main characters of a movie).
 
-`EntDef`s starting with 1 or more spaces **relative** to the `EntDef` preceding it are in the `Object` `role`. Therefore, this `EntDef` "has a" `relationship` with the `EntDef` preceding it.
+An `ED` starting with 1 or more spaces **relative** to the `ED` immediately preceding it is an `Object` of that preceding `ED` and therefore "has a" `Relationship` with it.
 
-`EntDef`s starting with 0 spaces **relative** to the `EntDef` preceding it has no `relationship`, explicit or implied, with that entity. However, together (and perhaps with many others) they all will have their own, *independent* `relationship` with a preceding `Subject` `EntDef`.
+An `ED` starting with 0 spaces **relative** to the `ED` immediately preceding it has no `Relationship`, explicit or implied, with that `ED`. Instead, together (and perhaps with many other `ED`s) they all will have their own, *independent* `Relationship` with a preceding `Subject` `ED`.
 
-YERML doesn't explicitly define what a `relationship` is. That definition is currently left to the file's context, author's communicated intent, and/or audience interpretation. For example, a common `relationship` is when an Object (w.r.t. Object Oriented Programming) "has a" attribute.
+YERML doesn't explicitly define what a `Relationship` is. That definition is currently left to the file's context, author's communicated intent, and/or audience interpretation. For example, a common `Relationship` is when an object (w.r.t. Object Oriented Programming) "has a" attribute.
 
-As shown in `spec.yerml` it's possible to define entities in a nested manner (akin to "in-line"). This file could have been rewritten into separate `root` definitions. However, as the author, I chose the nested manner because I wanted to emphasize the "composition" pattern being described. I don't have a general recommendation either way. It's left up to the author and their audience to pick a format to optimize readability and comprehension for their particular context.
+As shown in `spec.yerml` it's possible to define entities in a nested format. However, this file could have been written into a flat format with more `Root` definitions. What's the best format?
 
-In practice, I recommend using spaces over tabs. Regardless, both are supported in the VS Code extension for now.
+There isn't one. As the author, I chose the nested format because I wanted to emphasize the [composition pattern](https://en.wikipedia.org/wiki/Composite_pattern) being described. You may prefer the flat format. Regardless, it's left up to the author and their audience to pick a format to optimize readability and comprehension for their particular context.
 
-#### Subject
+Regardless of format, I recommend using spaces over tabs for indentation even though both are supported in the VS Code extension for now.
 
-The entity definition `subject` (not to be confused with the `Subject` `role` as described above) can be either an `Entity Name` or `Entity Type`.
+### Entity
 
-##### Entity Names
+The entity definition `entity` can be either an `Entity Name` or `Entity Type`.
 
-`Entity Name`s are unique-to-the-peer-`subject` identifiers. 
+#### Entity Names
 
-Their regex is `_*[a-z]\\w*`. Importantly, they always start with a lower case letter or any number of underscores. They DO NOT start with upper case letters in order to prevent confusion with `Entity Type`s.
+`Entity Names` are identifiers unique to the `Subject` `ED`.
 
-`EntDef`s whose `subject`s are `Entity Name`s imply that all subsequent `EntDef`s (properly indented) belong to this specific entity **instance** and NOT this entity's `Entity Type` unless this instance's `Entity Type` is included in the descriptors section.
+Their regex pattern is `_*[a-z]\\w*`, which means they always start with a lower case letter or any number of underscores. They **DO NOT** start with upper case letters in order to prevent confusion with `Entity Types`.
 
-##### Entity Types
+`ED`s defined by `Entity Names` imply that all subsequent `ED`s (properly indented) belong to the **instance** of this entity and **NOT** this entity's `Entity Type` *unless* this instance's `Entity Type` is included in the descriptors section.
 
-`Entity Type`s are globally unique identifiers.
+#### Entity Types
 
-Their regex is `[A-Z]\\w*`. Importantly, they always start with an upper case letter. They DO NOT start with lower case letters or underscores in order to prevent confusion with Entity Names.
+`Entity Types` are identifies unique to the entire file.
 
-`EntDef`s whose subjects are `Entity Type`s imply that all subsequent `EntDef`s (properly indented) belong to this `Entity Type` and all entity instances that are this `Entity Type` or inherit from it.
+Their regex pattern is `[A-Z]\\w*`, which means they always start with an upper case letter. They **DO NOT** start with lower case letters or underscores in order to prevent confusion with `Entity Names`.
 
-#### Descriptors
+`ED`s defined by `Entity Type`s imply that all subsequent `ED`s (properly indented) belong to the `Entity Type` and that all **instances** of this `Entity Type` (direct or inherited from) will have all defined `Relationships` as well.
 
-The core YERML specification provides 3 kinds of descriptors, which describe various aspects of the entity or its relationship to its "peer".
+### Descriptors
+
+The core YERML specification provides 3 kinds of descriptors: `Count`, `Type`, and `Constraints`. These describe various aspects of the `entity` or its relationship to its `Subject` `ED`.
 
 None of the descriptors are required. Absence of some descriptors imply default values or meanings. 
 
-The order in which descriptors are listed does not matter, but I personally like `Count` `EntityType` `Constraints`.
+The order in which descriptors are listed does not matter, but I personally like `Count` `Type` `Constraints`.
 
-Finally, I prefer to delimit the descriptors by spaces to improve readability, but it's not strictly necessary to do so since their grammars are sufficiently unique.
+I prefer to delimit the descriptors by spaces to improve readability, but it's not strictly necessary to do so since their grammars are sufficiently unique.
 
 See below for details.
-##### Count
+#### Count
 
-The Count descriptor specifies the `relationship`'s quantity & scale with the `Subject` `EntDef`.
+The `Count` descriptor specifies the `Relationship`'s quantity & scale with the `Subject` `ED`.
 
-There can **ONLY** be 0 or 1 Count descriptors per `EntDef`.
+There can **ONLY** be 0 or 1 `Count` descriptors per `ED`.
 
-The regex for Count is `[*+-]|\\d+[+-]?|\\d+-\\d+`.
+The regex pattern for `Count` is `[*+-]|\\d+[+-]?|\\d+-\\d+`.
 
-The Count has three forms: single quantity, open ended, and range.
+---
 
-When the Count form is single quantity, it means that the `Subject` `EntDef` has the same `relationship` with *exactly* the given quantity of **instances** of the `Object` `EntDef`.
+The `Count` has three forms: `Single`, `Open`, and `Range`.
 
-When the Count form is open ended, it means that the `Subject` `EntDef` has the same `relationship` with some quantity, to infinity or to zero, of **instances** of the `Object` `EntDef`.
+`Single` `Counts` mean that the `Subject` `ED` has the same `Relationship` with *exactly* the given single quantity of **instances** of the `Object` `ED`.
 
-When the Count form is range, it means that the `Subject` `EntDef` has the same `relationship` with some range of quantities, inclusive, of **instances** of the `Object` `EntDef`.
+For example, a Cat (`Subject`) has (`Relationship`) 4 (`Single` `Count`) paws (`Object` **instance**):
 
-When Count does not have a quantity, it is assumed to be `1` unless Count is `*`.
+~~~~
+Cat:
+  paws: 4
+~~~~
 
-See the following concrete examples.
-###### Count Examples
+`Open` `Counts` mean that the `Subject` `ED` has the same `Relationship` with a given quantity, either to infinity or to zero inclusively, of **instances** of the `Object` `ED`.
 
-`3` means "exactly 3"
-`2+` means "2 or more"
-`5-` means "5 or less"
-`-5` is **invalid**, not supported
-`10-12` means "between 10 to 12, inclusively" (i.e. could be 10, 11, or 12 instances)
-`-` means "1 or less" (useful perhaps for denoting optional attributes)
-`+` means "1 or more"
-`*` means "0 or more"
+For example, a Clowder (`Subject`) has (`Relationship`) 3 or more (`Open` `Count`) Cats (`Object`):
 
-##### Entity Type (with single inheritance)
+~~~~
+Clowder:
+  Cat: 3+
+~~~~
 
-To Be Improved:
+`Range` `Counts` mean that the `Subject` `ED` has the same `Relationship` with a given range of quantities, inclusive, of **instances** of the `Object` `ED`.
+
+For example, a Litter (`Subject`) has (`Relationship`) 1 to 12 inclusive (`Range` `Count`) kittens (`Object` **instance** of `Entity Type` Cat):
+
+~~~~
+Litter:
+  kittens: 1-12 Cat
+~~~~
+
+If an `ED` does not have a `Count` quantity, it is assumed to be `1` unless `Count` is `*` as explained below.
+
+See the following concrete examples:
+
+- `3` means "exactly 3"
+- `2+` means "2 or more"
+- `5-` means "5 or less"
+- `-5` is **INVALID**, not recognized
+- `10-12` means "between 10 to 12, inclusively" (i.e. could be 10, 11, or 12 instances)
+- `-` means "1 or less" (useful perhaps for denoting optional attributes)
+- `+` means "1 or more"
+- `*` means "0 or more"
+
+#### Type
+
+The `Type` descriptor specifies the `Object` `ED` entity's `Entity Type`.
+
+There can **ONLY** be 0 or 1 `Type` descriptors per `ED`.
+
+The `Type` has three forms: `Implicit`, `Explicit`, and `Anonymous`.
+
+---
+
+`Implicit` `Types` have the format `Entity Type`. That is, their regex pattern is the same as `Entity Type`.
+
+This `Type` is called `Implicit` because while it specifies the "is a" relationship between an entity **instance** and `Entity Type`, any new `ED`s not listed in this `Entity Type`'s `Root` definition **implies** the creation of a new `Entity Type` borne by this **instance**.
+
+By not naming this `Implicit` `Type` following the form below, it is impossible for other `Entity Types` to inherit from this `Implicit` `Type`.
+
+---
+
+`Explicit` `Types` have the format `Entity Type(Inherited Entity Type)`. 
+
+---
+
+`Anonymous` `Types` have no format because they are null.
+
+---
+
+Again, the regex pattern for `Entity Type` is `[A-Z]\\w*`.
+
+`ED`s that specify a `Type` implies that all 
 
 Akin to programming variable types and the ability for objects to inherit other objects. Only allows for single inheritance.
 
-##### Constraints
+#### Constraints
 
 To Be Improved:
 
 Entities can have values. These values can be constrained. Typical numerical constraints apply. Can also have "always equals" (i.e. constant), "default equals", and "just equals" (arbitrary equals perhaps).
 
-### Imports
+## Imports
 
 To Be Improved:
 
 Other YERML files can be imported, more or less copying their contents directly in line with the import statement. Helps keep files small & reusable.
 
-### Comments
+## Comments
 
 To Be Improved:
 
 Just like comments in programming. Help readers understand what's going on.
 
-### Directives
+## Directives
 
 To Be Improved:
 
 Only one supported and that's the beginning YERML directive to specify the YERML version for future use.
 
-## Example
+# Example
 
 To Be Improved:
 
@@ -162,14 +212,14 @@ Pet:
   adoptable: _= "yes"
 ~~~~
 
-## Known Issues
+# Known Issues
 
-YERML does not provide a method for authors to explicitly specify relationships between `Subject` and `Object` `EntDef`s.
+YERML does not provide a method for authors to explicitly specify relationships between `Subject` and `Object` `ED`s.
 
 YERML entity definition constraint values lack boolean support.
 
-## Release Notes
+# Release Notes
 
-### 0.1
+## 0.1
 
 Initial release of YERML.
