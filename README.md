@@ -171,48 +171,92 @@ Remember, regardless of `Type` form, all `Object` `ED`s (properly indented) will
 
 #### Constraints
 
-The `Constraints` descriptors specifies the `Object` `ED` entity's `Entity Type`.
+In some cases, entities may be thought to have an inherent `Value`. A common example are basic variables in programming languages like `int` or `string`.
 
-To Be Improved:
+The `Constraints` descriptors specify limits on the `Value` an entity can take on.
 
-Entities can have values. These values can be constrained. Typical numerical constraints apply. Can also have "always equals" (i.e. constant), "default equals", and "just equals" (arbitrary equals perhaps).
+There can be 0 or more `Constraints` per `ED`.
+
+`Constraints` always have the form of `Operator` `Value` (e.g. = 1) with each pairing normally separated by a space for readability, though this is not strictly necessary.
+
+The following `Operators` are supported:
+
+- <: "less than"
+- \> : "greater than"
+- <= : "less than or equal to"
+- \>= : "greater than or equal to"
+- != : "not equal to"
+- := : "always equal to" (for defining constants)
+- _= : "by default equal to" (for indicating the value starts as this, but can change)
+- = : "equal to" (as an example, but can change)
+
+`Values` can currently be single or double quoted text, numbers, or `entities`.
+
+`Values` can **NOT** currently be `Entity Types`, chains of `entities` separated by dots (e.g. petrescue.cat.name) as normally seen in object oriented programming.
 
 ## Imports
 
-To Be Improved:
+As found in programming, it's best practice to keep things decoupled and reusable ([SOLID principles](https://en.wikipedia.org/wiki/SOLID)).
 
-Other YERML files can be imported, more or less copying their contents directly in line with the import statement. Helps keep files small & reusable.
+`Import` lines enable this behavior. Authors can split up YERML models into files that can be imported into other YERML files to help build (complex) models more quickly.
+
+The structure of the `import` line is:
+
+~~~~
+import "some/path/to/some/file.yerml"
+~~~~
+
+As of this time of writing the parser is not complete. However, the intention is that `Import` lines will simply be replaced with the contents of the file being pointed to (which will lead to naming conflicts, but we'll get there).
+
+The `Import` path can be any URI or local file location.
 
 ## Comments
 
-To Be Improved:
+`Comments` allow authors to leave more detailed notes throughout a file.
 
-Just like comments in programming. Help readers understand what's going on.
+YERML follows the YAML comment style, which starts with `#` and has to be the last thing in a line (or otherwise could be a line on its own).
 
+For example:
+
+~~~~
+Cat: Mammal(Animal) # This is a comment
+~~~~
 ## Directives
 
-To Be Improved:
+Only one `Directive` is supported and that's the `%YERML` `Directive`.
 
-Only one supported and that's the beginning YERML directive to specify the YERML version for future use.
+All valid YERML files **MUST** start with a `%YERML` directive followed by a version number corresponding to the language version the author is writing for.
+
+For example:
+
+~~~~
+%YERML v0.1
+~~~~
+
+## File Separators
+
+The file start (`---`) and file end (`...`) delimiters found in YAML are implemented in YERML as well. They don't really do anything right now.
 
 # Example
 
-To Be Improved:
-
-Let's look at an example:
+The description above can still be a little dense and abstract, so let's look at an example:
 
 ~~~~
 PetRescue:
-  name: = "Heaven on Merf"
+  name: = "Happy Paws"
   cats: 12- Cat(Pet)
     has_FIP: _= "no"
   dogs: 20- Dog(Pet)
     is_leash_trained: _= "no"
     
 Pet:
-  name:
+  name
   adoptable: _= "yes"
 ~~~~
+
+And here is the English translation:
+
+A Pet Rescue called Happy Paws can support ("have") up to 12 Cats and 20 Dogs. Cats and Dogs are Pets, which have names and can be adoptable by default. Cats can have FIP, usually not, but Dogs for sure can't have FIP. Dogs can be leash trained, but not by default (i.e. they're not leash trained when they're born). Cats normally are not leash trained.
 
 # Known Issues
 
