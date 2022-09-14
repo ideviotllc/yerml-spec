@@ -5,7 +5,7 @@
 
 Drive: := r"[A-Za-z]{1}:"
 
-Protocol := r"[A-Za-z]+://"                         # Remote root specifier e.g. https://
+Protocol: := r"[A-Za-z]+://"                         # Remote root specifier e.g. https://
 
 DomainName: := r"[A-Za-z\-]+"
 
@@ -19,7 +19,7 @@ Directory: := r"${DirName}[/\\]"
 
 FileName: := r".+"
 
-FileExt := r".+"
+FileExt: := r".+"
 
 File: := r"${FileName}\.r{FileExt}"
 
